@@ -9,10 +9,6 @@ plugins {
     id("org.jetbrains.compose") version "0.0.0-web-dev-12"
 }
 
-group = "testMe"
-
-version = "unspecified"
-
 kotlin {
     js(IR) {
         browser {
@@ -36,7 +32,13 @@ kotlin {
 
         val commonMain by getting {
             dependencies {
+
+                /**
+                 * The shared project module contains Transport Models and Constants which
+                 * must be the same between Client and Server.
+                 */
                 implementation(project(":shared"))
+
                 implementation("io.ktor:ktor-client-serialization:$ktorVersion")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
@@ -46,9 +48,6 @@ kotlin {
 
         val jsMain by getting {
             dependencies {
-
-                // implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:0.20.0")
-                // implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$coroutinesVersion")
 
                 // Compose Web
                 implementation(compose.web.web)

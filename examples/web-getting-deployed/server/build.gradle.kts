@@ -17,7 +17,13 @@ kotlin {
     sourceSets {
         val jvmMain by getting {
             dependencies {
+
+                /**
+                 * The shared project module contains Transport Models and Constants which
+                 * must be the same between Client and Server.
+                 */
                 implementation(project(":shared"))
+
                 implementation("io.ktor:ktor-serialization:$ktorVersion")
                 implementation("io.ktor:ktor-server-servlet:$ktorVersion")
                 implementation("io.ktor:ktor-server-core:$ktorVersion")
@@ -48,21 +54,30 @@ var jsFileMapName: String = "$jsFileName.map"
 val jsFile = File(jsFileDir, jsFileName)
 val jsFileMap = File(jsFileDir, jsFileMapName)
 
-println("JS Client will be compiled to: '${jsFile.absolutePath}'")
+println("JS Client will be transpiled to: '${jsFile.absolutePath}'")
 
 war.apply {
-    dependsOn(jsBrowserProductionWebpack, jvmJar)
+    // Before packaging the WAR file...
+    dependsOn(
+        jsBrowserProductionWebpack, // ...the JavaScript Client must be built...
+        jvmJar // ...and the Server-source must be compiled.
+    )
+
     webInf {
         from("src/jvmMain/resources")
+
+        // `classes` is the folder from static content will be served
         into("classes") {
             from(jsFile) // Package the Client Web-App JavaScript file
             from(jsFileMap) // Package the Kotlin source map; this will be served to the browser to assist with debugging
         }
     }
+
     group = "application"
 
+    // Include the class-paths for...
     classpath(
-        configurations["jvmRuntimeClasspath"], // Classpath of dependencies
-        jvmJar // Classpath of the compiled Server
+        configurations["jvmRuntimeClasspath"], // ...dependencies.
+        jvmJar // ...compiled server.
     )
 }

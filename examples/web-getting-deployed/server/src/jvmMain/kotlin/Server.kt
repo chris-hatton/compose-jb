@@ -26,14 +26,20 @@ import kotlinx.html.script
 import kotlinx.html.title
 
 /**
- *
+ * This is the name of the browser-executable JavaScript file of the Client.
+ * Its name is derived from the `client` Gradle module it is compiled from.
  */
+private const val jsFileName = "client.js"
 
-var jsFileName = "client.js"
-var jsFileMapName = "$jsFileName.map"
+/**
+ * The Kotlin/JS compiler also produces a same-named,
+ * standard JavaScript Map file to assist with debugging.
+ * See: https://www.html5rocks.com/en/tutorials/developertools/sourcemaps/
+ */
+private const val jsFileMapName = "$jsFileName.map"
 
-const val initialNumber = 0
-var numberFlow: MutableStateFlow<Int> = MutableStateFlow(value = initialNumber)
+private const val initialNumber = 0
+private val numberFlow: MutableStateFlow<Int> = MutableStateFlow(value = initialNumber)
 
 /**
  * This `main` function supports running the Ktor Server directly during development,
@@ -42,6 +48,9 @@ var numberFlow: MutableStateFlow<Int> = MutableStateFlow(value = initialNumber)
  */
 fun main(args: Array<String>): Unit = io.ktor.server.jetty.EngineMain.main(args)
 
+/**
+ * This `main` Ktor module definition is the entry-point once inside a Container engine.
+ */
 @OptIn(ExperimentalWebSocketExtensionApi::class)
 fun Application.main() {
 
@@ -53,7 +62,9 @@ fun Application.main() {
 
     routing {
 
-        // Serve a basic page defined as HTML DOM, embedding the 'Compose for Web' App
+        /**
+         * Serve a basic page defined as HTML DOM that embeds the 'Compose for Web' client App.
+         */
         get("/") {
             call.respondHtml {
                 head {
@@ -66,18 +77,28 @@ fun Application.main() {
             }
         }
 
-        // Provide the current number to a client
+        /**
+         * Provide the current number to a client
+         * See: https://ktor.io/docs/requests.html
+         */
         get(GET_NUMBER_PATH) {
             val response = GetNumberResponse(numberFlow.value)
             call.respond(response)
         }
 
-        // Enable clients to set the number
+        /**
+         * Enable clients to set the number
+         * See: https://ktor.io/docs/requests.html
+         */
         post(SET_NUMBER_PATH) {
             val request = call.receive<SetNumberRequest>()
             numberFlow.value = request.number
         }
 
+        /**
+         * Emissions on numberFlow will be broadcast to all connected clients
+         * See: https://ktor.io/docs/websocket.html
+         */
         webSocket(NUMBER_UPDATES_PATH) {
             numberFlow.collect { number ->
                 val numberFrame = Frame.Text(number.toString())
