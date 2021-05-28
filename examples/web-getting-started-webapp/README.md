@@ -1,4 +1,4 @@
-### web-getting-started-war
+### web-getting-started-webapp
 
 This example shows how a **Compose for Web** UI can form part of client/server Web-App written completely in Kotlin and packaged inside a standard WAR file, ready for production deployment.
 
