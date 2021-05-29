@@ -72,7 +72,7 @@ fun Application.main() {
                 }
                 body {
                     div { id = ROOT_DIV_ID } // Required by Compose Web
-                    script(src = "/static/$jsFileName") {}
+                    script(src = "static/$jsFileName") {}
                 }
             }
         }

@@ -11,10 +11,12 @@ import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
+import io.ktor.http.URLBuilder
 import io.ktor.http.Url
 import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.readText
 import io.ktor.http.contentType
+import io.ktor.http.pathComponents
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
@@ -39,7 +41,7 @@ import kotlin.coroutines.CoroutineContext
  */
 class NumberViewModel(
     private val httpClient: HttpClient,
-    baseUrl: Url,
+    private val baseUrl: Url,
     override val coroutineContext: CoroutineContext
 ) : CoroutineScope {
 
@@ -47,12 +49,11 @@ class NumberViewModel(
         const val NUMBER_LOADING = "-"
     }
 
-    private val url = baseUrl
-    private val hostname = url.host
-    private val port = url.port
+    private val hostname = baseUrl.host
+    private val port = baseUrl.port
 
-    private val getNumberUrl = url.copy(encodedPath = GET_NUMBER_PATH)
-    private val setNumberUrl = url.copy(encodedPath = SET_NUMBER_PATH)
+    private val getNumberUrl = URLBuilder(baseUrl).pathComponents(GET_NUMBER_PATH).build()
+    private val setNumberUrl = URLBuilder(baseUrl).pathComponents(SET_NUMBER_PATH).build()
 
     private suspend fun getServerNumber() = httpClient.get<GetNumberResponse>(getNumberUrl).number
     private suspend fun setServerNumber(number: Int) = httpClient.post<Unit>(setNumberUrl) {
@@ -132,11 +133,17 @@ class NumberViewModel(
 
         // Listen for number updates from the server
         launch {
+
+            val numberUpdatesPath = URLBuilder(baseUrl)
+                .pathComponents(NUMBER_UPDATES_PATH)
+                .build()
+                .encodedPath
+
             httpClient.webSocket(
                 method = HttpMethod.Get,
                 host = hostname,
                 port = port,
-                path = NUMBER_UPDATES_PATH
+                path = numberUpdatesPath
             ) {
                 for (frame in incoming) {
                     val textFrame = frame as? Frame.Text ?: continue
