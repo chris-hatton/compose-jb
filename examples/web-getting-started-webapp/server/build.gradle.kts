@@ -1,13 +1,9 @@
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
 
-val ktorVersion = "1.5.4"
-val serializationVersion = "1.2.1"
-val coroutinesVersion = "1.4.32"
-
 plugins {
     id("org.gretty") // Applied first in root project due to: https://github.com/akhikhl/gretty/issues/454
     kotlin("multiplatform")
-    kotlin("plugin.serialization") version "1.4.32"
+    kotlin("plugin.serialization") version Versions.SERIALIZATION_PLUGIN
     application
     war
 }
@@ -24,12 +20,12 @@ kotlin {
                  */
                 implementation(project(":shared"))
 
-                implementation("io.ktor:ktor-serialization:$ktorVersion")
-                implementation("io.ktor:ktor-server-servlet:$ktorVersion")
-                implementation("io.ktor:ktor-server-core:$ktorVersion")
-                implementation("io.ktor:ktor-html-builder:$ktorVersion")
-                implementation("io.ktor:ktor-websockets:$ktorVersion")
-                implementation("io.ktor:ktor-server-jetty:$ktorVersion")
+                implementation("io.ktor:ktor-serialization:${Versions.KTOR}")
+                implementation("io.ktor:ktor-server-servlet:${Versions.KTOR}")
+                implementation("io.ktor:ktor-server-core:${Versions.KTOR}")
+                implementation("io.ktor:ktor-html-builder:${Versions.KTOR}")
+                implementation("io.ktor:ktor-websockets:${Versions.KTOR}")
+                implementation("io.ktor:ktor-server-jetty:${Versions.KTOR}")
             }
         }
     }

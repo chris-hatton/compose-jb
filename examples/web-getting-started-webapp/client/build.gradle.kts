@@ -1,12 +1,8 @@
 
-val ktorVersion = "1.5.4"
-val serializationVersion = "1.2.1"
-val coroutinesVersion = "1.4.3"
-
 plugins {
     kotlin("multiplatform")
-    kotlin("plugin.serialization") version "1.4.32"
-    id("org.jetbrains.compose") version "0.0.0-web-dev-12"
+    kotlin("plugin.serialization") version Versions.SERIALIZATION_PLUGIN
+    id("org.jetbrains.compose") version Versions.COMPOSE_FOR_WEB
 }
 
 kotlin {
@@ -39,10 +35,10 @@ kotlin {
                  */
                 implementation(project(":shared"))
 
-                implementation("io.ktor:ktor-client-serialization:$ktorVersion")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
-                implementation("io.ktor:ktor-client-websockets:$ktorVersion")
+                implementation("io.ktor:ktor-client-serialization:${Versions.KTOR}")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.SERIALIZATION_RUNTIME}")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.COROUTINES}")
+                implementation("io.ktor:ktor-client-websockets:${Versions.KTOR}")
             }
         }
 
@@ -54,9 +50,9 @@ kotlin {
                 implementation(compose.runtime)
 
                 // Ktor HTTP client
-                implementation("io.ktor:ktor-client-js:$ktorVersion")
-                implementation("io.ktor:ktor-client-json-js:$ktorVersion")
-                implementation("io.ktor:ktor-client-serialization-js:$ktorVersion")
+                implementation("io.ktor:ktor-client-js:${Versions.KTOR}")
+                implementation("io.ktor:ktor-client-json-js:${Versions.KTOR}")
+                implementation("io.ktor:ktor-client-serialization-js:${Versions.KTOR}")
             }
         }
     }

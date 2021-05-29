@@ -1,11 +1,7 @@
 
-val ktorVersion = "1.5.4"
-val serializationVersion = "1.2.1"
-val coroutinesVersion = "1.4.32"
-
 plugins {
     kotlin("multiplatform")
-    kotlin("plugin.serialization") version "1.4.32"
+    kotlin("plugin.serialization") version Versions.SERIALIZATION_PLUGIN
 }
 
 kotlin {
@@ -31,9 +27,9 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
-                implementation("io.ktor:ktor-client-json:$ktorVersion")
-                implementation("io.ktor:ktor-client-serialization:$ktorVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.SERIALIZATION_RUNTIME}")
+                implementation("io.ktor:ktor-client-json:${Versions.KTOR}")
+                implementation("io.ktor:ktor-client-serialization:${Versions.KTOR}")
             }
         }
         val commonTest by getting {

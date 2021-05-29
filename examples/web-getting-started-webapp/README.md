@@ -10,9 +10,16 @@ The example further demonstrates:
 - Reactive presentation logic based on Kotlin `Flow`s
 - Use of Ktor HTTP GET/POST Requests and WebSockets.
 
+#### Building
+
+To build this example as a distributable WAR file:
+```
+./gradlew war
+```
+
 #### Running
 
-Build and (locally) serve the exaple WAR file:
+To both build and (locally) serve this example via a WAR file:
 ```
 ./gradlew tomcatRunWar
 ```

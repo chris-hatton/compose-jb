@@ -4,7 +4,7 @@ plugins {
     /**
      * See: https://docs.gradle.org/current/userguide/plugins.html#sec:subprojects_plugins_dsl
      */
-    kotlin("multiplatform") version "1.4.32" apply false
+    kotlin("multiplatform") version Versions.KOTLIN apply false
 
     /**
      * The ['Gretty' Gradle plugin](https://github.com/gretty-gradle-plugin) provides tasks to easily package & run/debug a WAR file.
@@ -13,7 +13,7 @@ plugins {
      * It is only applied here, to the root project, as a workaround for:
      * https://github.com/akhikhl/gretty/issues/454
      */
-    id("org.gretty") version "3.0.4"
+    id("org.gretty") version Versions.GRETTY
 }
 
 allprojects {
