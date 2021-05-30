@@ -2,7 +2,9 @@
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
+import io.ktor.features.CallLogging
 import io.ktor.features.ContentNegotiation
+import io.ktor.features.StatusPages
 import io.ktor.html.respondHtml
 import io.ktor.http.cio.websocket.ExperimentalWebSocketExtensionApi
 import io.ktor.http.cio.websocket.Frame
@@ -42,13 +44,6 @@ private const val initialNumber = 0
 private val numberFlow: MutableStateFlow<Int> = MutableStateFlow(value = initialNumber)
 
 /**
- * This `main` function supports running the Ktor Server directly during development,
- * using an embedded Servlet Engine.  When running from a WAR distributable in a
- * full Servlet Container, this is not used.
- */
-fun main(args: Array<String>): Unit = io.ktor.server.jetty.EngineMain.main(args)
-
-/**
  * This `main` Ktor module definition is the entry-point once inside a Container engine.
  */
 @OptIn(ExperimentalWebSocketExtensionApi::class)
@@ -60,21 +55,37 @@ fun Application.main() {
 
     install(WebSockets)
 
+    // Call logging is not strictly essential, but a practical necessity for developing the server
+    // May be disabled (e.g. by configuration) for production Apps
+    // See: https://ktor.io/docs/logging.html#call_logging
+    install(CallLogging)
+
+    install(StatusPages)
+
     routing {
 
         /**
          * Serve a basic page defined as HTML DOM that embeds the 'Compose for Web' client App.
          */
         get("/") {
-            call.respondHtml {
-                head {
-                    title("web-getting-deployed")
+            // See: https://ktor.io/docs/logging.html#access_logger
+            call.application.environment.log.info("Serving Application JS")
+
+            try {
+                call.respondHtml {
+                    head {
+                        title("web-getting-deployed")
+                    }
+                    body {
+                        div { id = ROOT_DIV_ID } // Required by Compose Web
+                        script(src = "static/$jsFileName") {}
+                    }
                 }
-                body {
-                    div { id = ROOT_DIV_ID } // Required by Compose Web
-                    script(src = "static/$jsFileName") {}
-                }
+            } catch (e: Exception) {
+                call.application.environment.log.error("Failed serving Application JS", e)
             }
+
+            call.application.environment.log.info("Served Application JS")
         }
 
         /**
@@ -82,6 +93,8 @@ fun Application.main() {
          * See: https://ktor.io/docs/requests.html
          */
         get(GET_NUMBER_PATH) {
+            call.application.environment.log.info("Serving number to client")
+
             val response = GetNumberResponse(numberFlow.value)
             call.respond(response)
         }
@@ -91,6 +104,8 @@ fun Application.main() {
          * See: https://ktor.io/docs/requests.html
          */
         post(SET_NUMBER_PATH) {
+            call.application.environment.log.info("Accepting number from client")
+
             val request = call.receive<SetNumberRequest>()
             numberFlow.value = request.number
         }
@@ -100,6 +115,8 @@ fun Application.main() {
          * See: https://ktor.io/docs/websocket.html
          */
         webSocket(NUMBER_UPDATES_PATH) {
+            call.application.environment.log.info("Pushing number to client")
+
             numberFlow.collect { number ->
                 val numberFrame = Frame.Text(number.toString())
                 send(numberFrame)

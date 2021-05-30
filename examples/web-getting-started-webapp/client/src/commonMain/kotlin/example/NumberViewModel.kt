@@ -12,6 +12,7 @@ import io.ktor.client.request.post
 import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.URLBuilder
+import io.ktor.http.URLProtocol
 import io.ktor.http.Url
 import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.readText
@@ -66,6 +67,7 @@ class NumberViewModel(
             object Increment : User()
             object Decrement : User()
         }
+
         sealed class Server : Operation() {
             data class Set(val number: Int) : Operation()
         }
@@ -143,6 +145,13 @@ class NumberViewModel(
                 method = HttpMethod.Get,
                 host = hostname,
                 port = port,
+                request = {
+                    url.protocol = when (baseUrl.protocol) {
+                        URLProtocol.HTTP -> URLProtocol.WS
+                        URLProtocol.HTTPS -> URLProtocol.WSS
+                        else -> throw Exception("Unexpected base URL protocol")
+                    }
+                },
                 path = numberUpdatesPath
             ) {
                 for (frame in incoming) {

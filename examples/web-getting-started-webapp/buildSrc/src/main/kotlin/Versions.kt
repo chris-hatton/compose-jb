@@ -7,4 +7,5 @@ object Versions {
     const val COROUTINES = "1.4.3"
     const val COMPOSE_FOR_WEB = "0.0.0-web-dev-12"
     const val GRETTY = "3.0.4"
+    const val LOGBACK = "1.2.3"
 }

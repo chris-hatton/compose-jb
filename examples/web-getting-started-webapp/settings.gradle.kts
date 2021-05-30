@@ -5,7 +5,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = "web-getting-deployed"
+rootProject.name = "web-getting-started-webapp"
 
 include("shared") // Transport models shared between client and server
 include("client") // Compose for Web front-end

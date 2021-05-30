@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This file included as a workaround for: https://youtrack.jetbrains.com/issue/KTOR-645 -->
+
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_3.dtd">
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+    <Call name="addServerClass">
+        <Arg>-org.eclipse.jetty.</Arg>
+    </Call>
+</Configure>
