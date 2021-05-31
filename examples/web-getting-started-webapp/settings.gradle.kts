@@ -7,6 +7,10 @@ pluginManagement {
 
 rootProject.name = "web-getting-started-webapp"
 
-include("shared") // Transport models shared between client and server
-include("client") // Compose for Web front-end
 include("server") // Ktor-based back-end
+
+include("shared") // Transport models shared between client and server
+
+include("client") // Code shared between clients e.g. ViewModels (presentation logic)
+include(":client:browser") // Compose for Web front-end
+include(":client:desktop") // Compose for Desktop front-end

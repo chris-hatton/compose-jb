@@ -34,7 +34,7 @@ gretty {
     contextPath = "/"
 }
 
-val clientWebpack: KotlinWebpack = tasks.findByPath(":client:jsBrowserProductionWebpack") as KotlinWebpack
+val clientWebpack: KotlinWebpack = tasks.findByPath(":client:browser:browserBrowserProductionWebpack") as KotlinWebpack
 
 var jsFileDir: File = clientWebpack.destinationDirectory
 var jsFileName: String = clientWebpack.outputFileName
