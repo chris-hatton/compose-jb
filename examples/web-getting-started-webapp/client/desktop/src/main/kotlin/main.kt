@@ -31,7 +31,8 @@ fun main() {
             Scaffold(
                 topBar = {
                     TopAppBar(title = { Text("Example") })
-                }) {
+                }
+            ) {
                 NumberView(viewModel)
             }
         }
