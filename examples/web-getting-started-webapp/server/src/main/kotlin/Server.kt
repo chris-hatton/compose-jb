@@ -29,9 +29,9 @@ import kotlinx.html.title
 
 /**
  * This is the name of the browser-executable JavaScript file of the Client.
- * Its name is derived from the `client` Gradle module it is compiled from.
+ * Its name is derived from the `browser` Gradle module it is compiled from.
  */
-private const val jsFileName = "client.js"
+private const val jsFileName = "browser.js"
 
 /**
  * The Kotlin/JS compiler also produces a same-named,

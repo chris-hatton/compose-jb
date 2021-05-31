@@ -25,11 +25,11 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
@@ -69,7 +69,7 @@ class NumberViewModel(
         }
 
         sealed class Server : Operation() {
-            data class Set(val number: Int) : Operation()
+            data class Set(val number: Int) : Server()
         }
     }
 
@@ -80,7 +80,7 @@ class NumberViewModel(
         val initialNumber = getServerNumber()
         val initialOperation: Operation = Operation.Server.Set(initialNumber)
         val numberFlow = operationChannel
-            .receiveAsFlow()
+            .consumeAsFlow()
             .scan(initialOperation to initialNumber) { (_, number), operation ->
                 val result = when (operation) {
                     Operation.User.Increment -> number + 1
